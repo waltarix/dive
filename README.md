@@ -24,7 +24,7 @@ docker run --rm -it \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -v  "$(pwd)":"$(pwd)" \
       -w "$(pwd)" \
-      -v "$HOME/.dive.yaml":"$HOME/.dive.yaml" \
+      -v "$HOME/.dive.yml":"$HOME/.dive.yml" \
       wagoodman/dive:latest build -t <some-tag> .
 ```
 
@@ -270,7 +270,7 @@ layer:
 ```
 
 dive will search for configs in the following locations:
-- `$XDG_CONFIG_HOME/dive/*.yaml`
-- `$XDG_CONFIG_DIRS/dive/*.yaml`
-- `~/.config/dive/*.yaml`
-- `~/.dive.yaml`
+- `$XDG_CONFIG_HOME/dive/*.yml`
+- `$XDG_CONFIG_DIRS/dive/*.yml`
+- `~/.config/dive/*.yml`
+- `~/.dive.yml`

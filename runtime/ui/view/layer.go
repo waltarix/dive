@@ -113,9 +113,27 @@ func (v *Layer) Setup(view *gocui.View, header *gocui.View) error {
 			OnAction: v.CursorDown,
 		},
 		{
+			Key:      gocui.KeyCtrlN,
+			Modifier: gocui.ModNone,
+			OnAction: v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
 			Key:      gocui.KeyArrowUp,
 			Modifier: gocui.ModNone,
 			OnAction: v.CursorUp,
+		},
+		{
+			Key:      gocui.KeyCtrlP,
+			Modifier: gocui.ModNone,
+			OnAction: v.CursorUp,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-up"},
+			OnAction:   v.CursorUp,
 		},
 		{
 			Key:      gocui.KeyArrowLeft,
@@ -123,9 +141,17 @@ func (v *Layer) Setup(view *gocui.View, header *gocui.View) error {
 			OnAction: v.CursorUp,
 		},
 		{
+			ConfigKeys: []string{"keybinding.x-left"},
+			OnAction:   v.CursorUp,
+		},
+		{
 			Key:      gocui.KeyArrowRight,
 			Modifier: gocui.ModNone,
 			OnAction: v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-right"},
+			OnAction:   v.CursorDown,
 		},
 		{
 			ConfigKeys: []string{"keybinding.page-up"},
