@@ -46,7 +46,7 @@ func init() {
 }
 
 func initCli() {
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dive.yaml, ~/.config/dive/*.yaml, or $XDG_CONFIG_HOME/dive.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dive.yml, ~/.config/dive/*.yml, or $XDG_CONFIG_HOME/dive.yml)")
 	rootCmd.PersistentFlags().String("source", "docker", "The container engine to fetch the image from. Allowed values: "+strings.Join(dive.ImageSources, ", "))
 	rootCmd.PersistentFlags().BoolP("version", "v", false, "display version number")
 	rootCmd.PersistentFlags().BoolP("ignore-errors", "i", false, "ignore image parsing errors and run the analysis anyway")
@@ -77,23 +77,33 @@ func initConfig() {
 	viper.SetDefault("log.path", "./dive.log")
 	viper.SetDefault("log.enabled", false)
 	// keybindings: status view / global
-	viper.SetDefault("keybinding.quit", "ctrl+c")
-	viper.SetDefault("keybinding.toggle-view", "tab")
-	viper.SetDefault("keybinding.filter-files", "ctrl+f, ctrl+slash")
+	viper.SetDefault("keybinding.quit", "q, ctrl+c")
+	viper.SetDefault("keybinding.toggle-view", "tab, ctrl+t")
+	viper.SetDefault("keybinding.filter-files", "ctrl+s, ctrl+slash")
 	// keybindings: layer view
 	viper.SetDefault("keybinding.compare-all", "ctrl+a")
 	viper.SetDefault("keybinding.compare-layer", "ctrl+l")
 	// keybindings: filetree view
-	viper.SetDefault("keybinding.toggle-collapse-dir", "space")
+	viper.SetDefault("keybinding.toggle-collapse-dir", "enter")
 	viper.SetDefault("keybinding.toggle-collapse-all-dir", "ctrl+space")
-	viper.SetDefault("keybinding.toggle-filetree-attributes", "ctrl+b")
+	viper.SetDefault("keybinding.toggle-filetree-attributes", "ctrl+x")
 	viper.SetDefault("keybinding.toggle-added-files", "ctrl+a")
 	viper.SetDefault("keybinding.toggle-removed-files", "ctrl+r")
 	viper.SetDefault("keybinding.toggle-modified-files", "ctrl+m")
-	viper.SetDefault("keybinding.toggle-unmodified-files", "ctrl+u")
-	viper.SetDefault("keybinding.toggle-wrap-tree", "ctrl+p")
-	viper.SetDefault("keybinding.page-up", "pgup")
-	viper.SetDefault("keybinding.page-down", "pgdn")
+	viper.SetDefault("keybinding.toggle-unmodified-files", "ctrl+o")
+	viper.SetDefault("keybinding.toggle-wrap-tree", "ctrl+w")
+	viper.SetDefault("keybinding.page-up", "pgup, ctrl+u")
+	viper.SetDefault("keybinding.page-down", "pgdn, space, ctrl+d")
+	viper.SetDefault("keybinding.goto-first-line", "g")
+	viper.SetDefault("keybinding.goto-last-line", "G")
+	viper.SetDefault("keybinding.to-first-line-of-window", "H")
+	viper.SetDefault("keybinding.to-middle-line-of-window", "M")
+	viper.SetDefault("keybinding.to-last-line-of-window", "L")
+	// keybindings: vim like
+	viper.SetDefault("keybinding.x-up", "k, ctrl+p")
+	viper.SetDefault("keybinding.x-down", "j, ctrl+n")
+	viper.SetDefault("keybinding.x-left", "h, ctrl+b")
+	viper.SetDefault("keybinding.x-right", "l, ctrl+f")
 
 	viper.SetDefault("diff.hide", "")
 
@@ -172,7 +182,7 @@ func initLogging() {
 
 // getDefaultCfgFile checks for config file in paths from xdg specs
 // and in $HOME/.config/dive/ directory
-// defaults to $HOME/.dive.yaml
+// defaults to $HOME/.dive.yml
 func getDefaultCfgFile() string {
 	home, err := homedir.Dir()
 	if err != nil {
@@ -191,10 +201,10 @@ func getDefaultCfgFile() string {
 			return file
 		}
 	}
-	return path.Join(home, ".dive.yaml")
+	return path.Join(home, ".dive.yml")
 }
 
-// findInPath returns first "*.yaml" file in path's subdirectory "dive"
+// findInPath returns first "*.yml" file in path's subdirectory "dive"
 // if not found returns empty string
 func findInPath(pathTo string) string {
 	directory := path.Join(pathTo, "dive")
@@ -205,7 +215,7 @@ func findInPath(pathTo string) string {
 
 	for _, file := range files {
 		filename := file.Name()
-		if path.Ext(filename) == ".yaml" {
+		if path.Ext(filename) == ".yml" {
 			return path.Join(directory, filename)
 		}
 	}

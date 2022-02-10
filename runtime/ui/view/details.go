@@ -72,9 +72,17 @@ func (v *Details) Setup(view *gocui.View, header *gocui.View) error {
 			OnAction: v.CursorDown,
 		},
 		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
 			Key:      gocui.KeyArrowUp,
 			Modifier: gocui.ModNone,
 			OnAction: v.CursorUp,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-up"},
+			OnAction:   v.CursorUp,
 		},
 	}
 
@@ -134,7 +142,7 @@ func (v *Details) Render() error {
 	var wastedSpace int64
 
 	template := "%5s  %12s  %-s\n"
-	inefficiencyReport := fmt.Sprintf(format.Header(template), "Count", "Total Space", "Path")
+	inefficiencyReport := fmt.Sprintf(format.ColumnHeader(template), "Count", "Total Space", "Path")
 
 	height := 100
 	if v.view != nil {
@@ -151,10 +159,10 @@ func (v *Details) Render() error {
 		}
 	}
 
-	imageNameStr := fmt.Sprintf("%s %s", format.Header("Image name:"), v.imageName)
-	imageSizeStr := fmt.Sprintf("%s %s", format.Header("Total Image size:"), humanize.Bytes(v.imageSize))
-	effStr := fmt.Sprintf("%s %d %%", format.Header("Image efficiency score:"), int(100.0*v.efficiency))
-	wastedSpaceStr := fmt.Sprintf("%s %s", format.Header("Potential wasted space:"), humanize.Bytes(uint64(wastedSpace)))
+	imageNameStr := fmt.Sprintf("%s %s", format.ColumnHeader("Image name:"), v.imageName)
+	imageSizeStr := fmt.Sprintf("%s %s", format.ColumnHeader("Total Image size:"), humanize.Bytes(v.imageSize))
+	effStr := fmt.Sprintf("%s %d %%", format.ColumnHeader("Image efficiency score:"), int(100.0*v.efficiency))
+	wastedSpaceStr := fmt.Sprintf("%s %s", format.ColumnHeader("Potential wasted space:"), humanize.Bytes(uint64(wastedSpace)))
 
 	v.gui.Update(func(g *gocui.Gui) error {
 		// update header
@@ -174,13 +182,13 @@ func (v *Details) Render() error {
 
 		var lines = make([]string, 0)
 		if v.currentLayer.Names != nil && len(v.currentLayer.Names) > 0 {
-			lines = append(lines, format.Header("Tags:   ")+strings.Join(v.currentLayer.Names, ", "))
+			lines = append(lines, format.ColumnHeader("Tags:   ")+strings.Join(v.currentLayer.Names, ", "))
 		} else {
-			lines = append(lines, format.Header("Tags:   ")+"(none)")
+			lines = append(lines, format.ColumnHeader("Tags:   ")+"(none)")
 		}
-		lines = append(lines, format.Header("Id:     ")+v.currentLayer.Id)
-		lines = append(lines, format.Header("Digest: ")+v.currentLayer.Digest)
-		lines = append(lines, format.Header("Command:"))
+		lines = append(lines, format.ColumnHeader("Id:     ")+v.currentLayer.Id)
+		lines = append(lines, format.ColumnHeader("Digest: ")+v.currentLayer.Digest)
+		lines = append(lines, format.ColumnHeader("Command:"))
 		lines = append(lines, v.currentLayer.Command)
 		lines = append(lines, "\n"+imageHeaderStr)
 		lines = append(lines, imageNameStr)

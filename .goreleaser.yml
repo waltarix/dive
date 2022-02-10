@@ -1,50 +1,36 @@
-release:
-  prerelease: false
+project_name: dive
+
+before:
+  hooks:
+    - go mod download
 
 builds:
   - binary: dive
+    targets:
+      - linux_amd64
+      - darwin_amd64
+      - darwin_arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+      - -X "main.version={{ .RawVersion }} (custom)"
     env:
       - CGO_ENABLED=0
-    goos:
-      - windows
-      - darwin
-      - linux
-    goarch:
-      - amd64
-    ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.buildTime={{.Date}}`.
-
-brews:
-  - github:
-      owner: wagoodman
-      name: homebrew-dive
-    homepage: "https://github.com/wagoodman/dive/"
-    description: "A tool for exploring each layer in a docker image"
 
 archives:
-  - format: tar.gz
-    format_overrides:
-      - goos: windows
-        format: zip
+  - name_template: "{{ .ProjectName }}-{{ .RawVersion }}-{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    format: tar.xz
+    wrap_in_directory: "true"
+    files:
+      - none*
 
-nfpms:
-  - license: MIT
-    maintainer: Alex Goodman
-    homepage: https://github.com/wagoodman/dive/
-    description: "A tool for exploring each layer in a docker image"
-    formats:
-      - rpm
-      - deb
+snapshot:
+  name_template: "{{ .Tag }}-devel"
 
-dockers:
-  -
-    binaries:
-      - dive
-    dockerfile: Dockerfile
-    # todo: on 1.0 remove 'v' prefix
-    image_templates:
-      - "wagoodman/dive:latest"
-      - "wagoodman/dive:{{ .Tag }}"
-      - "wagoodman/dive:v{{ .Major }}"
-      - "wagoodman/dive:v{{ .Major }}.{{ .Minor }}"
-    build_flag_templates:
-      - "--build-arg=DOCKER_CLI_VERSION={{.Env.DOCKER_CLI_VERSION}}"
+checksum:
+  disable: true
+
+changelog:
+  skip: true
