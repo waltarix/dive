@@ -18,7 +18,7 @@ const (
 	whiteoutPrefix       = ".wh."
 	doubleWhiteoutPrefix = ".wh..wh.."
 	uncollapsedItem      = "─ "
-	collapsedItem        = "⊕ "
+	collapsedItem        = "⦊ "
 )
 
 // FileTree represents a set of files, directories, and their relations.

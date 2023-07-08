@@ -61,6 +61,14 @@ func (v *ImageDetails) Setup(body, header *gocui.View) error {
 			ConfigKeys: []string{"keybinding.page-down"},
 			OnAction:   v.PageDown,
 		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorUp,
+		},
 	}
 
 	_, err := key.GenerateBindings(v.gui, v.Name(), infos)
@@ -76,7 +84,7 @@ func (v *ImageDetails) Setup(body, header *gocui.View) error {
 // 3. a list of inefficient file allocations
 func (v *ImageDetails) Render() error {
 	analysisTemplate := "%5s  %12s  %-s\n"
-	inefficiencyReport := fmt.Sprintf(format.Header(analysisTemplate), "Count", "Total Space", "Path")
+	inefficiencyReport := fmt.Sprintf(format.ColumnHeader(analysisTemplate), "Count", "Total Space", "Path")
 
 	var wastedSpace int64
 	for idx := 0; idx < len(v.inefficiencies); idx++ {
@@ -86,10 +94,10 @@ func (v *ImageDetails) Render() error {
 		inefficiencyReport += fmt.Sprintf(analysisTemplate, strconv.Itoa(len(data.Nodes)), humanize.Bytes(uint64(data.CumulativeSize)), data.Path)
 	}
 
-	imageNameStr := fmt.Sprintf("%s %s", format.Header("Image name:"), v.imageName)
-	imageSizeStr := fmt.Sprintf("%s %s", format.Header("Total Image size:"), humanize.Bytes(v.imageSize))
-	efficiencyStr := fmt.Sprintf("%s %d %%", format.Header("Image efficiency score:"), int(100.0*v.efficiency))
-	wastedSpaceStr := fmt.Sprintf("%s %s", format.Header("Potential wasted space:"), humanize.Bytes(uint64(wastedSpace)))
+	imageNameStr := fmt.Sprintf("%s %s", format.ColumnHeader("Image name:"), v.imageName)
+	imageSizeStr := fmt.Sprintf("%s %s", format.ColumnHeader("Total Image size:"), humanize.Bytes(v.imageSize))
+	efficiencyStr := fmt.Sprintf("%s %d %%", format.ColumnHeader("Image efficiency score:"), int(100.0*v.efficiency))
+	wastedSpaceStr := fmt.Sprintf("%s %s", format.ColumnHeader("Potential wasted space:"), humanize.Bytes(uint64(wastedSpace)))
 
 	v.gui.Update(func(g *gocui.Gui) error {
 		width, _ := v.body.Size()

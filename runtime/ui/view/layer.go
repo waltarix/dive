@@ -133,6 +133,22 @@ func (v *Layer) Setup(body *gocui.View, header *gocui.View) error {
 			ConfigKeys: []string{"keybinding.page-down"},
 			OnAction:   v.PageDown,
 		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-up"},
+			OnAction:   v.CursorUp,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-left"},
+			OnAction:   v.CursorUp,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-right"},
+			OnAction:   v.CursorDown,
+		},
 	}
 
 	helpKeys, err := key.GenerateBindings(v.gui, v.name, infos)

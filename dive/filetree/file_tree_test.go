@@ -42,14 +42,14 @@ func TestStringCollapsed(t *testing.T) {
 	expected :=
 		`├── 1 node!
 ├── 2 node!
-│   └─⊕ 2 child!
+│   └─⦊ 2 child!
 ├── 3 node!
 │   ├── 3 child!
 │   │   ├── 3 grandchild 1!
 │   │   │   └── 3 greatgrandchild 1!
 │   │   └── 3 grandchild 2!
 │   └── 3 nested child 1!
-├─⊕ 4 node!
+├─⦊ 4 node!
 └── 5 node!
 `
 	actual := tree.String(false)

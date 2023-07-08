@@ -60,3 +60,5 @@ replace github.com/golangci/ineffassign => github.com/golangci/ineffassign v0.0.
 replace github.com/golangci/lint-1 => github.com/golangci/lint-1 v0.0.0-20190420132249-ee948d087217
 
 replace mvdan.cc/unparam => mvdan.cc/unparam v0.0.0-20190209190245-fbb59629db34
+
+replace github.com/mattn/go-runewidth => github.com/waltarix/go-runewidth v0.0.14-custom-r3

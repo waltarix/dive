@@ -246,53 +246,93 @@ func (vm *FileTreeViewModel) CursorRight(filterRegex *regexp.Regexp) error {
 
 // PageDown moves to next page putting the cursor on top
 func (vm *FileTreeViewModel) PageDown() error {
-	nextBufferIndexLowerBound := vm.bufferIndexLowerBound + vm.height()
-	nextBufferIndexUpperBound := nextBufferIndexLowerBound + vm.height()
-
-	// todo: this work should be saved or passed to render...
-	treeString := vm.ViewTree.StringBetween(nextBufferIndexLowerBound, nextBufferIndexUpperBound, vm.ShowAttributes)
-	lines := strings.Split(treeString, "\n")
-
-	newLines := len(lines) - 1
-	if vm.height() >= newLines {
-		nextBufferIndexLowerBound = vm.bufferIndexLowerBound + newLines
+	visibleSize := vm.ModelTree.VisibleSize()
+	position := vm.bufferIndexLowerBound + vm.height()
+	if vm.height() > visibleSize || vm.bufferIndexUpperBound()+vm.height() > visibleSize || position >= visibleSize {
+		vm.GotoLastLine()
+		return nil
 	}
 
-	vm.bufferIndexLowerBound = nextBufferIndexLowerBound
-
-	if vm.TreeIndex < nextBufferIndexLowerBound {
-		vm.bufferIndex = 0
-		vm.TreeIndex = nextBufferIndexLowerBound
-	} else {
-		vm.bufferIndex -= newLines
-	}
+	vm.TreeIndex = position + vm.bufferIndex
+	vm.bufferIndexLowerBound = position
 
 	return nil
 }
 
 // PageUp moves to previous page putting the cursor on top
 func (vm *FileTreeViewModel) PageUp() error {
-	nextBufferIndexLowerBound := vm.bufferIndexLowerBound - vm.height()
-	nextBufferIndexUpperBound := nextBufferIndexLowerBound + vm.height()
-
-	// todo: this work should be saved or passed to render...
-	treeString := vm.ViewTree.StringBetween(nextBufferIndexLowerBound, nextBufferIndexUpperBound, vm.ShowAttributes)
-	lines := strings.Split(treeString, "\n")
-
-	newLines := len(lines) - 2
-	if vm.height() >= newLines {
-		nextBufferIndexLowerBound = vm.bufferIndexLowerBound - newLines
+	visibleSize := vm.ModelTree.VisibleSize()
+	position := vm.bufferIndexLowerBound - vm.height()
+	if vm.height() > visibleSize || position <= 0 {
+		vm.ResetCursor()
+		return nil
 	}
 
-	vm.bufferIndexLowerBound = nextBufferIndexLowerBound
+	vm.TreeIndex = position + vm.bufferIndex
+	vm.bufferIndexLowerBound = position
 
-	if vm.TreeIndex > (nextBufferIndexUpperBound - 1) {
-		vm.bufferIndex = 0
-		vm.TreeIndex = nextBufferIndexLowerBound
-	} else {
-		vm.bufferIndex += newLines
-	}
 	return nil
+}
+
+func (vm *FileTreeViewModel) GotoLastLine() bool {
+	visibleSize := vm.ModelTree.VisibleSize()
+	if vm.TreeIndex >= visibleSize {
+		return false
+	}
+
+	vm.TreeIndex = visibleSize
+
+	if visibleSize > vm.height() {
+		vm.bufferIndexLowerBound = visibleSize - vm.height()
+		vm.bufferIndex = vm.height()
+	} else {
+		vm.bufferIndexLowerBound = 0
+		vm.bufferIndex = visibleSize
+	}
+
+	return true
+}
+
+func (vm *FileTreeViewModel) ToFirstLine() bool {
+	if vm.bufferIndex == 0 {
+		return false
+	}
+
+	vm.bufferIndex = 0
+	vm.TreeIndex = vm.bufferIndexLowerBound
+	return true
+}
+
+func (vm *FileTreeViewModel) ToMiddleLine() bool {
+	visibleSize := vm.ModelTree.VisibleSize()
+	position := visibleSize / 2
+	if visibleSize > vm.height() {
+		position = vm.height() / 2
+	}
+
+	if vm.bufferIndex == position {
+		return false
+	}
+
+	vm.bufferIndex = position
+	vm.TreeIndex = vm.bufferIndexLowerBound + position
+	return true
+}
+
+func (vm *FileTreeViewModel) ToLastLine() bool {
+	visibleSize := vm.ModelTree.VisibleSize()
+	position := visibleSize
+	if visibleSize > vm.height() {
+		position = vm.height()
+	}
+
+	if vm.bufferIndex == position {
+		return false
+	}
+
+	vm.bufferIndex = position
+	vm.TreeIndex = vm.bufferIndexLowerBound + position
+	return true
 }
 
 // getAbsPositionNode determines the selected screen cursor's location in the file tree, returning the selected FileNode.

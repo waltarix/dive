@@ -1,4 +1,4 @@
-drwxr-xr-x         0:0     1.2 MB  ├─⊕ bin
+drwxr-xr-x         0:0     1.2 MB  ├─⦊ bin
 drwxr-xr-x         0:0        0 B  ├── dev
 drwxr-xr-x         0:0     1.0 kB  ├── etc
 -rw-rw-r--         0:0      307 B  │   ├── group

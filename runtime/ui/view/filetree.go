@@ -167,6 +167,42 @@ func (v *FileTree) Setup(view, header *gocui.View) error {
 			Modifier: gocui.ModNone,
 			OnAction: v.CursorRight,
 		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-up"},
+			OnAction:   v.CursorUp,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-left"},
+			OnAction:   v.CursorLeft,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-right"},
+			OnAction:   v.CursorRight,
+		},
+		{
+			ConfigKeys: []string{"keybinding.goto-first-line"},
+			OnAction:   v.GotoFirstLine,
+		},
+		{
+			ConfigKeys: []string{"keybinding.goto-last-line"},
+			OnAction:   v.GotoLastLine,
+		},
+		{
+			ConfigKeys: []string{"keybinding.to-first-line-of-window"},
+			OnAction:   v.ToFirstLine,
+		},
+		{
+			ConfigKeys: []string{"keybinding.to-middle-line-of-window"},
+			OnAction:   v.ToMiddleLine,
+		},
+		{
+			ConfigKeys: []string{"keybinding.to-last-line-of-window"},
+			OnAction:   v.ToLastLine,
+		},
 	}
 
 	helpKeys, err := key.GenerateBindings(v.gui, v.name, infos)
@@ -263,6 +299,39 @@ func (v *FileTree) PageUp() error {
 		return err
 	}
 	return v.Render()
+}
+
+func (v *FileTree) GotoFirstLine() error {
+	v.resetCursor()
+	return v.Render()
+}
+
+func (v *FileTree) GotoLastLine() error {
+	if v.vm.GotoLastLine() {
+		return v.Render()
+	}
+	return nil
+}
+
+func (v *FileTree) ToFirstLine() error {
+	if v.vm.ToFirstLine() {
+		return v.Render()
+	}
+	return nil
+}
+
+func (v *FileTree) ToMiddleLine() error {
+	if v.vm.ToMiddleLine() {
+		return v.Render()
+	}
+	return nil
+}
+
+func (v *FileTree) ToLastLine() error {
+	if v.vm.ToLastLine() {
+		return v.Render()
+	}
+	return nil
 }
 
 // getAbsPositionNode determines the selected screen cursor's location in the file tree, returning the selected FileNode.

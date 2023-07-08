@@ -48,6 +48,14 @@ func (v *LayerDetails) Setup(body, header *gocui.View) error {
 			Modifier: gocui.ModNone,
 			OnAction: v.CursorUp,
 		},
+		{
+			ConfigKeys: []string{"keybinding.x-down"},
+			OnAction:   v.CursorDown,
+		},
+		{
+			ConfigKeys: []string{"keybinding.x-up"},
+			OnAction:   v.CursorUp,
+		},
 	}
 
 	_, err := key.GenerateBindings(v.gui, v.Name(), infos)
@@ -83,10 +91,10 @@ func (v *LayerDetails) Render() error {
 			tags = strings.Join(v.CurrentLayer.Names, ", ")
 		}
 		lines = append(lines, []string{
-			format.Header("Tags:   ") + tags,
-			format.Header("Id:     ") + v.CurrentLayer.Id,
-			format.Header("Digest: ") + v.CurrentLayer.Digest,
-			format.Header("Command:"),
+			format.ColumnHeader("Tags:   ") + tags,
+			format.ColumnHeader("Id:     ") + v.CurrentLayer.Id,
+			format.ColumnHeader("Digest: ") + v.CurrentLayer.Digest,
+			format.ColumnHeader("Command:"),
 			v.CurrentLayer.Command,
 		}...)
 
